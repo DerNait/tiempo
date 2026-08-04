@@ -15,7 +15,7 @@ export default defineConfig({
         tailwindcss(),
         VitePWA({
             registerType: 'autoUpdate',
-            injectRegister: 'auto',
+            injectRegister: null,
             manifest: {
                 name: 'Tiempo — presupuesto de tiempo',
                 short_name: 'Tiempo',

@@ -16,6 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // decide the scheme used to generate URLs.
         $middleware->trustProxies(at: '*');
 
+        // `replace()` only touches global middleware, so the swap has to be
+        // scoped to the group that actually runs CSRF validation.
+        $middleware->replaceInGroup(
+            'web',
+            Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+            App\Http\Middleware\ValidateCsrfToken::class,
+        );
+
         $middleware->alias([
             'abilities' => Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
             'ability' => Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,

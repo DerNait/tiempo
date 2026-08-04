@@ -9,8 +9,11 @@ RELEASE_ID="${1:?Usage: SSH_TARGET=root@host $0 RELEASE_ID}"
 IMAGE_NAME="tiempo-app:${RELEASE_ID}"
 ARTIFACT="${ROOT_DIR}/artifacts/tiempo-app-${RELEASE_ID}.tar.gz"
 REMOTE_RELEASE="${BASE_DIR}/releases/${RELEASE_ID}"
-SSH=(ssh -p "${SSH_PORT}" "${SSH_TARGET}")
-RSYNC_SSH="ssh -p ${SSH_PORT}"
+# SSH_COMMAND lets a caller wrap ssh (for example with sshpass) without
+# changing how the script is invoked.
+SSH_COMMAND="${SSH_COMMAND:-ssh}"
+SSH=(${SSH_COMMAND} -p "${SSH_PORT}" "${SSH_TARGET}")
+RSYNC_SSH="${SSH_COMMAND} -p ${SSH_PORT}"
 
 test -s "${ARTIFACT}"
 test -s "${ARTIFACT}.sha256"
@@ -58,8 +61,14 @@ docker compose \
     -f "${RELEASE_DIR}/docker-compose.production.yml" config --quiet
 
 ln -sfn "${RELEASE_DIR}" "${BASE_DIR}/current"
-rm -f "${BASE_DIR}/current/public/storage"
-mkdir -p "${BASE_DIR}/current/public/storage"
+
+# The image ships public/storage as a symlink into the container filesystem.
+# On the host it has to be a real directory so the shared storage bind mount
+# has somewhere to land.
+if [[ -L "${RELEASE_DIR}/public/storage" ]]; then
+    rm -f "${RELEASE_DIR}/public/storage"
+fi
+mkdir -p "${RELEASE_DIR}/public/storage"
 
 compose=(docker compose --env-file "${BASE_DIR}/shared/.env" --env-file "${BASE_DIR}/shared/deploy.env" -f "${BASE_DIR}/current/docker-compose.production.yml")
 # Bind mounts that pass through the `current` symlink are resolved when the
