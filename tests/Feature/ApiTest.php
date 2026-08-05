@@ -258,3 +258,70 @@ it('logs in and out through the session endpoints', function () {
 
     $this->actingAs($user)->postJson('/api/logout')->assertOk();
 });
+
+it('schedules the audit for a future day without counting it yet', function () {
+    // Late on 4 August local (22:00), scheduling the audit to begin on the 5th.
+    CarbonImmutable::setTestNow('2026-08-05T04:00:00Z');
+
+    $this->actingAs($this->user)
+        ->patchJson('/api/settings', [
+            'audit_mode_enabled' => true,
+            'audit_start_date' => '2026-08-05',
+        ])
+        ->assertOk()
+        ->assertJsonPath('user.audit_start_date', '2026-08-05');
+
+    // Stored as local midnight, which is 06:00 UTC in Guatemala.
+    expect($this->user->fresh()->audit_started_at->toIso8601String())->toBe('2026-08-05T06:00:00+00:00');
+
+    $this->actingAs($this->user)
+        ->getJson('/api/status')
+        ->assertOk()
+        ->assertJsonPath('audit.pending', true)
+        ->assertJsonPath('audit.day_number', 0)
+        ->assertJsonPath('audit.starts_on', '2026-08-05')
+        ->assertJsonPath('audit.finished', false);
+});
+
+it('counts audit days as whole local days once it begins', function () {
+    $this->actingAs($this->user)->patchJson('/api/settings', [
+        'audit_mode_enabled' => true,
+        'audit_start_date' => '2026-08-05',
+        'audit_days' => 7,
+    ])->assertOk();
+
+    // First local day, one minute past midnight.
+    CarbonImmutable::setTestNow('2026-08-05T06:01:00Z');
+    $this->actingAs($this->user)->getJson('/api/status')
+        ->assertJsonPath('audit.pending', false)
+        ->assertJsonPath('audit.day_number', 1);
+
+    // Late on the same local day: still day 1, not day 2.
+    CarbonImmutable::setTestNow('2026-08-06T05:00:00Z');
+    $this->actingAs($this->user)->getJson('/api/status')->assertJsonPath('audit.day_number', 1);
+
+    // Just after the next local midnight: day 2.
+    CarbonImmutable::setTestNow('2026-08-06T06:30:00Z');
+    $this->actingAs($this->user)->getJson('/api/status')->assertJsonPath('audit.day_number', 2);
+
+    // Seventh local day.
+    CarbonImmutable::setTestNow('2026-08-11T12:00:00Z');
+    $this->actingAs($this->user)->getJson('/api/status')
+        ->assertJsonPath('audit.day_number', 7)
+        ->assertJsonPath('audit.finished', false);
+
+    // Past local midnight after the last day.
+    CarbonImmutable::setTestNow('2026-08-12T06:30:00Z');
+    $this->actingAs($this->user)->getJson('/api/status')->assertJsonPath('audit.finished', true);
+});
+
+it('keeps an explicit start date instead of stamping now', function () {
+    CarbonImmutable::setTestNow('2026-08-04T19:15:00Z');
+
+    $this->actingAs($this->user)->patchJson('/api/settings', [
+        'audit_mode_enabled' => true,
+        'audit_start_date' => '2026-08-10',
+    ])->assertOk();
+
+    expect($this->user->fresh()->audit_started_at->toIso8601String())->toBe('2026-08-10T06:00:00+00:00');
+});

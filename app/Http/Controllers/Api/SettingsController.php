@@ -26,9 +26,26 @@ class SettingsController extends Controller
             unset($data['onboarded']);
         }
 
-        // Turning the audit on stamps its start; turning it off keeps the
-        // stamp so the dates of a finished audit stay readable.
-        if (array_key_exists('audit_mode_enabled', $data) && $data['audit_mode_enabled'] && ! $user->audit_mode_enabled) {
+        // An explicit start date always wins: a day spent setting things up
+        // should not have to count as a day of the audit.
+        $explicitStart = array_key_exists('audit_start_date', $data);
+
+        if ($explicitStart) {
+            $user->audit_started_at = $data['audit_start_date'] === null
+                ? null
+                : CarbonImmutable::parse($data['audit_start_date'], $user->effectiveTimezone())
+                    ->startOfDay()
+                    ->setTimezone('UTC');
+
+            unset($data['audit_start_date']);
+        }
+
+        // Otherwise, turning the audit on stamps its start; turning it off
+        // keeps the stamp so the dates of a finished audit stay readable.
+        if (! $explicitStart
+            && array_key_exists('audit_mode_enabled', $data)
+            && $data['audit_mode_enabled']
+            && ! $user->audit_mode_enabled) {
             $user->audit_started_at = now();
         }
 
@@ -52,6 +69,11 @@ class SettingsController extends Controller
             'audit_mode_enabled' => $user->audit_mode_enabled,
             'audit_started_at' => $user->audit_started_at !== null
                 ? CarbonImmutable::instance($user->audit_started_at)->toIso8601String()
+                : null,
+            'audit_start_date' => $user->audit_started_at !== null
+                ? CarbonImmutable::instance($user->audit_started_at)
+                    ->setTimezone($user->effectiveTimezone())
+                    ->format('Y-m-d')
                 : null,
             'audit_days' => $user->audit_days,
             'onboarded' => $user->onboarded_at !== null,

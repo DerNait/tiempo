@@ -64,17 +64,30 @@ class StatusPresenter
             return null;
         }
 
-        $start = CarbonImmutable::instance($user->audit_started_at);
+        $timezone = $user->effectiveTimezone();
+        $start = CarbonImmutable::instance($user->audit_started_at)->setTimezone($timezone);
         $days = max(1, $user->audit_days ?: 7);
-        $end = $start->addDays($days);
-        $elapsedDays = min($days, max(0, (int) floor($start->diffInDays($now)) + 1));
+
+        // Counted in whole local days: "día 2" begins at local midnight, not at
+        // whatever time of day the audit happened to be switched on.
+        $firstDay = $start->startOfDay();
+        $end = $firstDay->addDays($days);
+        $localNow = $now->setTimezone($timezone);
+
+        // The start can be in the future, so a day that was spent setting
+        // things up does not get counted as a day of honest measurement.
+        $pending = $localNow->lessThan($start);
 
         return [
             'started_at' => $start->toIso8601String(),
+            'starts_on' => $firstDay->format('Y-m-d'),
             'ends_at' => $end->toIso8601String(),
             'total_days' => $days,
-            'day_number' => $elapsedDays,
-            'finished' => $now->greaterThanOrEqualTo($end),
+            'day_number' => $pending
+                ? 0
+                : min($days, (int) $firstDay->diffInDays($localNow->startOfDay()) + 1),
+            'pending' => $pending,
+            'finished' => $localNow->greaterThanOrEqualTo($end),
         ];
     }
 }

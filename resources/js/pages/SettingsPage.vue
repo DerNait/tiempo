@@ -151,11 +151,24 @@ onMounted(loadTokens);
                 Auditoría activa
             </label>
 
-            <label class="block">
-                <span class="label">Duración (días)</span>
-                <input v-model.number="tracker.settings.audit_days" type="number" min="1" max="60" class="input"
-                    @change="saveSetting({ audit_days: tracker.settings!.audit_days })">
-            </label>
+            <div class="grid gap-3 sm:grid-cols-2">
+                <label class="block">
+                    <span class="label">Empieza el</span>
+                    <input v-model="tracker.settings.audit_start_date" type="date" class="input"
+                        @change="saveSetting({ audit_start_date: tracker.settings!.audit_start_date })">
+                </label>
+
+                <label class="block">
+                    <span class="label">Duración (días)</span>
+                    <input v-model.number="tracker.settings.audit_days" type="number" min="1" max="60" class="input"
+                        @change="saveSetting({ audit_days: tracker.settings!.audit_days })">
+                </label>
+            </div>
+
+            <p class="text-xs text-ink-400">
+                Puedes ponerla a partir de mañana si hoy ya perdiste horas sin registrar: los días se cuentan
+                completos, de medianoche a medianoche.
+            </p>
         </section>
 
         <section class="card space-y-3">

@@ -63,10 +63,21 @@ onMounted(loadReport);
         <section v-if="audit && !audit.finished"
             class="rounded-2xl border border-[var(--accent)]/40 bg-[color-mix(in_srgb,var(--accent)_12%,transparent)] p-4">
             <p class="text-sm font-medium text-ink-100">
-                Auditoría inicial · día {{ audit.day_number }} de {{ audit.total_days }}
+                <template v-if="audit.pending">
+                    Auditoría programada · empieza el {{ audit.starts_on }}
+                </template>
+                <template v-else>
+                    Auditoría inicial · día {{ audit.day_number }} de {{ audit.total_days }}
+                </template>
             </p>
             <p class="mt-1 text-xs text-ink-300">
-                Esta semana solo mides con honestidad. Aún no hay metas que cumplir ni nada que reprocharte.
+                <template v-if="audit.pending">
+                    Hoy registra con calma: lo de estas horas no entra en el conteo. Los
+                    {{ audit.total_days }} días arrancan a medianoche.
+                </template>
+                <template v-else>
+                    Esta semana solo mides con honestidad. Aún no hay metas que cumplir ni nada que reprocharte.
+                </template>
             </p>
         </section>
 

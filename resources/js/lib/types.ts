@@ -30,9 +30,13 @@ export interface PeriodTotals {
 
 export interface AuditState {
     started_at: string;
+    /** Local calendar date the first audit day begins on. */
+    starts_on: string;
     ends_at: string;
     total_days: number;
+    /** 0 while the audit is still scheduled for a future day. */
     day_number: number;
+    pending: boolean;
     finished: boolean;
 }
 
@@ -123,6 +127,7 @@ export interface Settings {
     accent_color: string;
     audit_mode_enabled: boolean;
     audit_started_at: string | null;
+    audit_start_date: string | null;
     audit_days: number;
     onboarded: boolean;
     rainmeter_priority_category_id: number | null;
