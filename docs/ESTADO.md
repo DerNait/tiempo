@@ -1,6 +1,6 @@
 # Estado: qué está hecho, qué está probado y qué falta
 
-Última actualización: 4 de agosto de 2026, release `20260804-4` en
+Última actualización: 5 de agosto de 2026, release `20260805-1` en
 <https://tiempo.dernait.com>.
 
 La regla de este documento: nada figura como funcionando si no se ejecutó. Cada
@@ -28,6 +28,8 @@ Comprobado por HTTPS contra tiempo.dernait.com después del despliegue:
 - `backup-production.sh` ejecutado a mano: dump verificado en
   `/var/backups/tiempo`. Cron instalado en `/etc/cron.d/tiempo-backup`.
 - `manifest.webmanifest`, `sw.js` e iconos servidos correctamente.
+- Programar la auditoría para un día futuro: queda `pending`, `day_number=0` y
+  arranca a medianoche local del día elegido.
 
 Los datos de prueba creados durante esa verificación se borraron. Se dejaron a
 propósito los dos presupuestos de la semana en curso, porque coinciden con los
@@ -35,7 +37,7 @@ del enunciado y sirven de punto de partida.
 
 ## Probado automáticamente
 
-**Backend — 58 pruebas Pest, 188 aserciones.** `docker compose exec app php vendor/bin/pest`
+**Backend — 61 pruebas Pest.** `docker compose exec app php vendor/bin/pest`
 
 | Área | Qué se fija |
 | --- | --- |
@@ -43,7 +45,7 @@ del enunciado y sirven de punto de partida.
 | `AggregationTest` | límites de día y semana en la zona del usuario; reparto de entradas que cruzan medianoche y el lunes 00:00; actividad abierta contada hasta ahora y nunca más allá del periodo; cobertura contra tiempo transcurrido; huecos; desglose por categoría; una zona horaria distinta (`Europe/Madrid`) |
 | `BudgetTest` | `minimum` pendiente/cumplido; `maximum` solo excedido al superarse, no al igualarse; `reference` nunca puntúa; prioridad más descuidada y mayor exceso |
 | `RainmeterContractTest` | **la respuesta completa contra una cadena esperada**, línea a línea; 16 claves en orden; caso sin actividad; caso sin presupuesto; nombres con saltos de línea; `time:read` obligatorio; sin token 401; token revocado deja de funcionar; token de solo lectura no puede escribir; límite de 30 req/min |
-| `ApiTest` | sesión requerida; cambio y detención por HTTP; categoría ajena rechazada; 422 con la entrada en conflicto; no se puede editar ni borrar lo de otro usuario; categoría con historial se archiva; presupuestos y copia de la semana anterior; una revisión por semana; CSV; token mostrado una sola vez; ajustes y sello de auditoría; reportes |
+| `ApiTest` | sesión requerida; cambio y detención por HTTP; categoría ajena rechazada; 422 con la entrada en conflicto; no se puede editar ni borrar lo de otro usuario; categoría con historial se archiva; presupuestos y copia de la semana anterior; una revisión por semana; CSV; token mostrado una sola vez; reportes; auditoría: fecha futura pendiente, conteo por días naturales locales, y que una fecha explícita gane sobre el sello automático |
 | `ValidateCsrfTokenTest` | CSRF se omite solo para peticiones con Bearer y sin cookie de sesión |
 
 **Frontend — 28 pruebas Vitest.** `npm test`
@@ -57,6 +59,28 @@ del enunciado y sirven de punto de partida.
   de categorías.
 
 **Tipos:** `npm run typecheck` (vue-tsc) sin errores.
+
+## La skin de Rainmeter
+
+Vive en [`rainmeter/`](../rainmeter/) y **no tiene pruebas automáticas**: se
+depuró contra la instalación real, escribiendo diagnósticos desde Lua a un
+archivo y recargando la skin con `Rainmeter.exe !Refresh`.
+
+Comprobado así, con evidencia:
+
+- Los 16 campos se extraen bien del texto plano (el fallo era que en una medida
+  hija de WebParser `StringIndex=1` devuelve la coincidencia completa, no el
+  grupo de captura, así que `ok` valía `"ok=1"` y su valor numérico era 0).
+- El botón *Actualizar* fuerza una descarga nueva: `server_time_unix` cambia al
+  pulsarlo. Antes usaba `Reset`+`!UpdateMeasure`, que no volvía a consultar.
+- El modo compacto conserva su estado: `Compact=1` en `Settings.inc` y
+  `AlwaysOnTop=2` en el `Rainmeter.ini` de Rainmeter, y sobrevive a un refresco.
+- El round-trip de codificación por Git es idéntico byte a byte: el repositorio
+  guarda UTF-8 y el checkout devuelve UTF-16LE con BOM.
+
+**Lo visual lo confirmó el usuario, no yo**: los acentos, el encaje del botón y
+la barra compacta se validaron mirando la pantalla, porque desde aquí no puedo
+ver lo que Rainmeter dibuja.
 
 ## Implementado
 
@@ -98,3 +122,5 @@ Cosas que **no** están hechas, dichas sin adornos:
   catálogo IANA completo. El backend acepta cualquier zona válida.
 - **Sin paginación en la interfaz de Historial.** La API pagina; el cliente pide
   100 registros y no ofrece "cargar más".
+- **La skin no tiene pruebas automáticas ni empaquetado `.rmskin`.** Se instala
+  copiando la carpeta; ver [`rainmeter/README.md`](../rainmeter/README.md).

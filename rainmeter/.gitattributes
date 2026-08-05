@@ -1,0 +1,10 @@
+# Rainmeter exige UTF-16 en el .ini para que los acentos se dibujen bien.
+# working-tree-encoding deja el blob en UTF-8 (para poder leer los diffs) y
+# reconstruye UTF-16LE con BOM al hacer checkout.
+TimeBudget/TimeBudget.ini              text working-tree-encoding=UTF-16LE-BOM eol=LF
+TimeBudget/@Resources/*.inc            text working-tree-encoding=UTF-16LE-BOM eol=LF
+TimeBudget/@Resources/*.inc.example    text working-tree-encoding=UTF-16LE-BOM eol=LF
+
+# El .lua se mantiene en ASCII a proposito: Rainmeter intercambia cadenas con
+# Lua en ANSI, asi que un acento aqui se dibujaria mal.
+TimeBudget/@Resources/Scripts/*.lua    text eol=LF

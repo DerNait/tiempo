@@ -24,3 +24,6 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# El Settings.inc real lleva el token de Rainmeter; en el repo va la plantilla.
+rainmeter/**/Settings.inc

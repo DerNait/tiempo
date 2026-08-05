@@ -42,7 +42,7 @@ variados. Nunca se ejecuta en `APP_ENV=production`.
 ## Pruebas
 
 ```bash
-# Backend (Pest, SQLite en memoria): 55 pruebas
+# Backend (Pest, SQLite en memoria): 61 pruebas
 docker compose exec app php vendor/bin/pest
 # o, sin levantar el stack:
 docker run --rm -v "$PWD":/app -w /app -u "$(id -u):$(id -g)" -e HOME=/tmp \
@@ -189,15 +189,20 @@ Límite de 30 solicitudes por minuto y por token; la skin consulta cada 15
 minutos. El formato está fijado por `tests/Feature/RainmeterContractTest.php`,
 que compara la respuesta completa contra la cadena esperada.
 
-Ejemplo de medida en Rainmeter:
+### La skin
+
+El panel de escritorio que consume este endpoint vive en
+[`rainmeter/`](rainmeter/), con sus instrucciones de instalación. Un detalle
+que no es evidente: en una medida hija de WebParser, `StringIndex=1` devuelve
+la coincidencia completa y no el grupo de captura, así que cada campo se
+extrae con un lookbehind anclado a inicio de línea:
 
 ```ini
-[MeasureTiempo]
+[MeasureApiOk]
 Measure=WebParser
-URL=https://tiempo.dernait.com/api/rainmeter/status
-Header=Authorization: Bearer TU_TOKEN
-RegExp=(?siU)current_activity_name=(.*)\ncurrent_activity_started_at=(.*)\n
-UpdateRate=900
+URL=[MeasureApi]
+RegExp=(?sim)(?<=^ok=)[01]
+StringIndex=1
 ```
 
 ## API
@@ -223,4 +228,6 @@ Todas las rutas de la app viven bajo `/api` con sesión de navegador
 ## Documentación
 
 - [`docs/ARQUITECTURA.md`](docs/ARQUITECTURA.md) — decisiones de diseño.
+- [`rainmeter/README.md`](rainmeter/README.md) — instalación de la skin y las
+  dos trampas de Rainmeter que costaron depurar.
 - [`docs/ESTADO.md`](docs/ESTADO.md) — qué está implementado y probado, y qué no.

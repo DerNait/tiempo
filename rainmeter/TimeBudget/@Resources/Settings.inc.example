@@ -1,0 +1,64 @@
+[Variables]
+; ============================================================
+; CONEXIÓN
+; ============================================================
+; 1 = muestra datos de ejemplo para probar el widget.
+; 0 = obtiene los datos desde tu API.
+DemoMode=1
+
+; Endpoint de solo lectura para Rainmeter.
+ApiUrl=https://tiempo.dernait.com/api/rainmeter/status
+
+; Token exclusivo con permiso time:read. No uses tu contraseña.
+ApiToken=
+
+; Panel web que se abre con el botón ABRIR PANEL.
+DashboardUrl=https://tiempo.dernait.com
+
+; Rainmeter actualiza la API cada 900 ciclos. Como la skin usa Update=1000,
+; equivale a una consulta automática cada 15 minutos.
+ApiUpdateRate=900
+
+; ============================================================
+; ESTADO DE LA VENTANA
+; 1 = barra compacta (solo el cronometro, siempre encima).
+; La skin lo reescribe sola al pulsar los botones; no hace falta tocarlo.
+; ============================================================
+Compact=0
+
+; ============================================================
+; APARIENCIA
+; ============================================================
+BackgroundColor=22,24,32,246
+PanelColor=32,35,46,255
+CellColor=42,46,60,255
+AccentColor=108,99,255,255
+AccentSoftColor=74,69,160,255
+SuccessColor=70,190,140,255
+WarningColor=244,159,67,255
+DangerColor=235,87,87,255
+TextColor=244,246,250,255
+MutedColor=158,164,178,255
+SubtleColor=98,106,124,255
+BorderColor=66,72,90,255
+AccentTextColor=255,255,255,255
+FontName=Segoe UI
+
+; ============================================================
+; DATOS DE DEMOSTRACIÓN
+; Solo se usan mientras DemoMode=1
+; ============================================================
+DemoCurrentActivityActive=1
+DemoCurrentActivityName=Proyecto de Unity
+DemoCurrentActivityStartedAt=10:02
+DemoCurrentActivityElapsedSeconds=5010
+DemoTodayTrackedMinutes=522
+DemoTodayElapsedMinutes=685
+DemoWeekTrackedMinutes=3110
+DemoWeekElapsedMinutes=3565
+DemoPriorityName=Proyecto de Unity
+DemoPriorityActualMinutes=425
+DemoPriorityBudgetMinutes=600
+DemoLeakName=Doom Scrolling
+DemoLeakActualMinutes=190
+DemoLeakLimitMinutes=120
