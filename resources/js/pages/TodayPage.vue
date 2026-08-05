@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { computed, onMounted, ref } from 'vue';
 import CategoryButton from '@/components/CategoryButton.vue';
 import CategoryPicker from '@/components/CategoryPicker.vue';
@@ -113,6 +114,7 @@ onMounted(loadReport);
             <div class="flex items-center justify-between">
                 <h2 class="text-sm font-medium text-ink-200">Últimos registros</h2>
                 <button type="button" class="btn-ghost !px-3 !py-1.5 text-xs" @click="edit(null)">
+                    <FaIcon icon="plus" />
                     Añadir registro
                 </button>
             </div>

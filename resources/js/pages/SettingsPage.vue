@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { onMounted, ref } from 'vue';
 import { api } from '@/lib/api';
 import { messageFrom, useTrackerStore } from '@/stores/tracker';
@@ -206,6 +207,7 @@ onMounted(loadTokens);
                 <div class="mt-2 flex gap-2">
                     <input v-model="newTokenName" type="text" class="input" placeholder="Nombre del token">
                     <button type="button" class="btn-primary shrink-0" :disabled="busy" @click="createToken">
+                        <FaIcon icon="key" />
                         Crear
                     </button>
                 </div>
@@ -226,6 +228,7 @@ onMounted(loadTokens);
                             </span>
                         </span>
                         <button type="button" class="btn-danger !px-3 !py-1.5 text-xs" @click="revokeToken(token)">
+                            <FaIcon icon="ban" />
                             Revocar
                         </button>
                     </li>
@@ -247,9 +250,12 @@ onMounted(loadTokens);
                     </span>
                     <button type="button" class="btn-ghost !px-2.5 !py-1 text-xs"
                         :aria-pressed="category.is_favorite" @click="toggleFavorite(category)">
-                        {{ category.is_favorite ? '★ Favorita' : '☆ Favorita' }}
+                        <FaIcon icon="star"
+                            :class="category.is_favorite ? 'text-[var(--accent)]' : 'text-ink-400'" />
+                        Favorita
                     </button>
                     <button type="button" class="btn-ghost !px-2.5 !py-1 text-xs" @click="toggleActive(category)">
+                        <FaIcon :icon="category.is_active ? 'archive' : 'restore'" />
                         {{ category.is_active ? 'Archivar' : 'Restaurar' }}
                     </button>
                 </li>
@@ -262,10 +268,16 @@ onMounted(loadTokens);
                 <input v-model="newCategory.icon" type="text" class="input text-center" maxlength="4" aria-label="Icono">
                 <input v-model="newCategory.color" type="color" class="h-full w-full rounded-xl bg-ink-900"
                     aria-label="Color">
-                <button type="submit" class="btn-primary">Añadir</button>
+                <button type="submit" class="btn-primary">
+                    <FaIcon icon="plus" />
+                    Añadir
+                </button>
             </form>
         </section>
 
-        <button type="button" class="btn-ghost w-full" @click="logout">Cerrar sesión</button>
+        <button type="button" class="btn-ghost w-full" @click="logout">
+            <FaIcon icon="logout" />
+            Cerrar sesión
+        </button>
     </div>
 </template>

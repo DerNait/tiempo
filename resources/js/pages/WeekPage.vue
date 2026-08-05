@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { computed, onMounted, ref, watch } from 'vue';
 import BudgetTable from '@/components/BudgetTable.vue';
 import CategoryDonut from '@/components/CategoryDonut.vue';
@@ -62,14 +63,18 @@ onMounted(() => {
 <template>
     <div class="space-y-4">
         <header class="flex items-center justify-between gap-2">
-            <button type="button" class="btn-ghost !px-3" aria-label="Semana anterior" @click="shiftWeek(-1)">←</button>
+            <button type="button" class="btn-ghost !px-3" aria-label="Semana anterior" @click="shiftWeek(-1)">
+                <FaIcon icon="prev" />
+            </button>
             <div class="text-center">
                 <h1 class="text-sm font-semibold text-ink-100">Semana</h1>
                 <p class="text-xs text-ink-400">
                     {{ report ? `${report.week_start} → ${report.week_end}` : '…' }}
                 </p>
             </div>
-            <button type="button" class="btn-ghost !px-3" aria-label="Semana siguiente" @click="shiftWeek(1)">→</button>
+            <button type="button" class="btn-ghost !px-3" aria-label="Semana siguiente" @click="shiftWeek(1)">
+                <FaIcon icon="next" />
+            </button>
         </header>
 
         <CoverageBar v-if="report" label="Registrado esta semana" :tracked-seconds="report.tracked_seconds"
@@ -128,6 +133,9 @@ onMounted(() => {
             </p>
         </section>
 
-        <RouterLink :to="{ name: 'review' }" class="btn-ghost w-full">Hacer la revisión semanal</RouterLink>
+        <RouterLink :to="{ name: 'review' }" class="btn-ghost w-full">
+            <FaIcon icon="review" />
+            Hacer la revisión semanal
+        </RouterLink>
     </div>
 </template>

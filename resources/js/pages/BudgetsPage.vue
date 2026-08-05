@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { onMounted, ref, watch } from 'vue';
 import { api, query } from '@/lib/api';
 import { minutesToLabel } from '@/lib/format';
@@ -112,12 +113,16 @@ onMounted(load);
 <template>
     <div class="space-y-4">
         <header class="flex items-center justify-between gap-2">
-            <button type="button" class="btn-ghost !px-3" aria-label="Semana anterior" @click="shiftWeek(-1)">←</button>
+            <button type="button" class="btn-ghost !px-3" aria-label="Semana anterior" @click="shiftWeek(-1)">
+                <FaIcon icon="prev" />
+            </button>
             <div class="text-center">
                 <h1 class="text-sm font-semibold text-ink-100">Presupuesto semanal</h1>
                 <p class="text-xs text-ink-400">Semana del {{ weekStart || '…' }}</p>
             </div>
-            <button type="button" class="btn-ghost !px-3" aria-label="Semana siguiente" @click="shiftWeek(1)">→</button>
+            <button type="button" class="btn-ghost !px-3" aria-label="Semana siguiente" @click="shiftWeek(1)">
+                <FaIcon icon="next" />
+            </button>
         </header>
 
         <p class="text-xs text-ink-400">
@@ -127,9 +132,11 @@ onMounted(load);
 
         <div class="flex flex-wrap gap-2">
             <button type="button" class="btn-ghost flex-1 text-xs" :disabled="busy" @click="copyPrevious">
+                <FaIcon icon="copy" />
                 Copiar semana anterior
             </button>
             <button type="button" class="btn-ghost flex-1 text-xs" :disabled="busy" @click="applyTemplate">
+                <FaIcon icon="template" />
                 Aplicar plantilla
             </button>
         </div>
@@ -172,7 +179,10 @@ onMounted(load);
                 Guardar también como plantilla recurrente
             </label>
 
-            <button type="submit" class="btn-primary w-full" :disabled="busy">Guardar presupuesto</button>
+            <button type="submit" class="btn-primary w-full" :disabled="busy">
+                <FaIcon icon="check" />
+                Guardar presupuesto
+            </button>
         </form>
     </div>
 </template>

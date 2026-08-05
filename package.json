@@ -26,6 +26,7 @@
         "vue-tsc": "^2.2.12"
     },
     "dependencies": {
+        "@fortawesome/free-solid-svg-icons": "^7.3.1",
         "chart.js": "^4.5.1",
         "pinia": "^3.0.4",
         "vue": "^3.5.40",

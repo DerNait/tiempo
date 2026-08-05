@@ -11,6 +11,10 @@ ocio son tiempo válido, no fracaso.
 - **Producción:** <https://tiempo.dernait.com>
 - **Stack:** Laravel 12 · PHP 8.3 · Vue 3 + TypeScript · Vite 7 · Tailwind 4 ·
   MySQL 8.4 · Sanctum · Pest · Vitest · Chart.js
+- **Iconos:** los de la interfaz son [Font Awesome Free](https://fontawesome.com)
+  (CC BY 4.0), dibujados desde su path data por `components/FaIcon.vue`; los de
+  las categorías son emoji, porque son datos del usuario y tienen que verse en
+  cualquier sitio, incluida la skin de Rainmeter.
 - **Zona horaria:** los instantes se guardan en UTC; los límites de día y semana
   se calculan en la zona del usuario (`America/Guatemala` por defecto). La
   semana empieza el lunes.

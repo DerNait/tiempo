@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { onMounted, ref } from 'vue';
 import EntryEditor from '@/components/EntryEditor.vue';
 import { api, query } from '@/lib/api';
@@ -75,8 +76,14 @@ onMounted(load);
             </label>
 
             <div class="flex gap-2">
-                <button type="submit" class="btn-primary flex-1" :disabled="loading">Filtrar</button>
-                <button type="button" class="btn-ghost" @click="exportCsv">Exportar CSV</button>
+                <button type="submit" class="btn-primary flex-1" :disabled="loading">
+                    <FaIcon icon="filter" />
+                    Filtrar
+                </button>
+                <button type="button" class="btn-ghost" @click="exportCsv">
+                    <FaIcon icon="download" />
+                    Exportar CSV
+                </button>
             </div>
         </form>
 

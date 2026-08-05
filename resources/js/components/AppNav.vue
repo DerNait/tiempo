@@ -1,10 +1,13 @@
 <script setup lang="ts">
-const links = [
-    { name: 'today', label: 'Hoy', icon: '⏱️' },
-    { name: 'week', label: 'Semana', icon: '📊' },
-    { name: 'budgets', label: 'Presupuesto', icon: '🎯' },
-    { name: 'history', label: 'Historial', icon: '📜' },
-    { name: 'settings', label: 'Ajustes', icon: '⚙️' },
+import FaIcon from '@/components/FaIcon.vue';
+import type { IconName } from '@/lib/icons';
+
+const links: { name: string; label: string; icon: IconName }[] = [
+    { name: 'today', label: 'Hoy', icon: 'today' },
+    { name: 'week', label: 'Semana', icon: 'week' },
+    { name: 'budgets', label: 'Presupuesto', icon: 'budget' },
+    { name: 'history', label: 'Historial', icon: 'history' },
+    { name: 'settings', label: 'Ajustes', icon: 'settings' },
 ];
 </script>
 
@@ -16,7 +19,7 @@ const links = [
                 <RouterLink :to="{ name: link.name }"
                     class="flex flex-col items-center gap-0.5 rounded-xl px-1 py-2.5 text-[11px] font-medium text-ink-400 transition"
                     active-class="text-[var(--accent)]">
-                    <span aria-hidden="true" class="text-lg leading-none">{{ link.icon }}</span>
+                    <FaIcon :icon="link.icon" class="text-base leading-none" />
                     {{ link.label }}
                 </RouterLink>
             </li>

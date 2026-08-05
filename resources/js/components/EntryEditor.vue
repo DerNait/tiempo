@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { computed, ref, watch } from 'vue';
 import { ApiError, api } from '@/lib/api';
 import { findOverlap, isValidRange } from '@/lib/overlap';
@@ -176,10 +177,15 @@ async function remove(): Promise<void> {
 
             <div class="mt-5 flex flex-wrap gap-2">
                 <button type="submit" class="btn-primary flex-1" :disabled="saving || rangeError !== null">
+                    <FaIcon icon="check" />
                     Guardar
                 </button>
-                <button type="button" class="btn-ghost" :disabled="saving" @click="emit('close')">Cancelar</button>
+                <button type="button" class="btn-ghost" :disabled="saving" @click="emit('close')">
+                    <FaIcon icon="cancel" />
+                    Cancelar
+                </button>
                 <button v-if="entry" type="button" class="btn-danger" :disabled="saving" @click="remove">
+                    <FaIcon icon="trash" />
                     Eliminar
                 </button>
             </div>

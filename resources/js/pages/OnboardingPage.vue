@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { api } from '@/lib/api';
@@ -100,8 +101,10 @@ async function finish(): Promise<void> {
                     <span aria-hidden="true">{{ category.icon }}</span>
                     <span class="min-w-0 flex-1 truncate text-sm text-ink-100">{{ category.name }}</span>
                     <button type="button" class="btn-ghost !px-2.5 !py-1 text-xs" :aria-pressed="category.is_favorite"
+                        :aria-label="`${category.is_favorite ? 'Quitar de' : 'Añadir a'} favoritas: ${category.name}`"
                         @click="toggleFavorite(category)">
-                        {{ category.is_favorite ? '★' : '☆' }}
+                        <FaIcon icon="star"
+                            :class="category.is_favorite ? 'text-[var(--accent)]' : 'text-ink-400'" />
                     </button>
                 </li>
             </ul>

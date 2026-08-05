@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FaIcon from '@/components/FaIcon.vue';
 import { computed } from 'vue';
 import { formatStopwatch, formatTimeInZone } from '@/lib/format';
 import { useTrackerStore } from '@/stores/tracker';
@@ -35,6 +36,7 @@ defineEmits<{ (event: 'stop'): void }>();
             </p>
 
             <button type="button" class="btn-ghost mt-4 w-full" :disabled="tracker.pending" @click="$emit('stop')">
+                <FaIcon icon="stop" />
                 Detener
             </button>
         </template>
